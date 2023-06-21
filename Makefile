@@ -28,7 +28,7 @@ LDFLAGS += -Wl,-Map=$(BUILD_DIR)/$(TARGET).map,-T$(LDFILE)
 
 VPATH := $(SRC_DIR)
 
-S_SRCS := startup.s
+S_SRCS := $(subst $(SRC_DIR)/,,$(wildcard $(SRC_DIR)/*.s))
 S_OBJS += $(addprefix $(BUILD_DIR)/,$(S_SRCS:.s=.o))
 
 C_SRCS := $(subst $(SRC_DIR)/,,$(wildcard $(SRC_DIR)/*.c))
