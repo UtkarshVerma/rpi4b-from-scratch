@@ -26,13 +26,11 @@ LDFLAGS := -nostdlib -nostartfiles -static
 LDFLAGS += -Wl,--build-id=none,--gc-sections
 LDFLAGS += -Wl,-Map=$(BUILD_DIR)/$(TARGET).map,-T$(LDFILE)
 
-VPATH := $(SRC_DIR)
+S_SRCS := $(wildcard $(SRC_DIR)/*.s)
+S_OBJS += $(subst $(SRC_DIR)/,$(BUILD_DIR)/,$(S_SRCS:.s=.o))
 
-S_SRCS := $(subst $(SRC_DIR)/,,$(wildcard $(SRC_DIR)/*.s))
-S_OBJS += $(addprefix $(BUILD_DIR)/,$(S_SRCS:.s=.o))
-
-C_SRCS := $(subst $(SRC_DIR)/,,$(wildcard $(SRC_DIR)/*.c))
-C_OBJS := $(addprefix $(BUILD_DIR)/,$(C_SRCS:.c=.o))
+C_SRCS := $(wildcard $(SRC_DIR)/*.c)
+C_OBJS := $(subst $(SRC_DIR)/,$(BUILD_DIR)/,$(C_SRCS:.c=.o))
 
 # Prettify output
 PRINTF := @printf "%-8s %s\n"
@@ -48,11 +46,11 @@ $(BUILD_DIR):
 	$(PRINTF) "MKDIR" $@
 	$Qmkdir -p $@
 
-$(S_OBJS): $(BUILD_DIR)/%.o: %.s | $(BUILD_DIR)
+$(BUILD_DIR)/%.o: $(SRC_DIR)/%.s | $(BUILD_DIR)
 	$(PRINTF) "AS" $@
 	$Q$(COMPILE.s) -o $@ $<
 
-$(C_OBJS): $(BUILD_DIR)/%.o: %.c | $(BUILD_DIR)
+$(BUILD_DIR)/%.o: $(SRC_DIR)/%.c | $(BUILD_DIR)
 	$(PRINTF) "CC" $@
 	$Q$(COMPILE.c) -o $@ $<
 
