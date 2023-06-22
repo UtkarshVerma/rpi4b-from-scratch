@@ -20,8 +20,9 @@ OBJDUMP := $(CROSS_COMPILE)-objdump
 SIZE := $(CROSS_COMPILE)-size
 GDB := $(CROSS_COMPILE)-gdb
 
-CFLAGS := -O2 -I. -I$(INC_DIR)
-CFLAGS += -Wall -Wextra -ffreestanding -fdata-sections -ffunction-sections
+CFLAGS := -Os -I. -I$(INC_DIR)
+CFLAGS += -Wall -Wextra -Wswitch-enum
+CFLAGS += -ffreestanding -fdata-sections -ffunction-sections
 LDFLAGS := -nostdlib -nostartfiles -static
 LDFLAGS += -Wl,--build-id=none,--gc-sections
 LDFLAGS += -Wl,-Map=$(BUILD_DIR)/$(TARGET).map,-T$(LDFILE)

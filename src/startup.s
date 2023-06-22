@@ -18,16 +18,16 @@ init:
     // initialized to zero so we fill the entire region with zeroes.
     adr     x1, __bss_start     // Defined in the linker script
     adr     x2, __bss_size      // Defined in the linker script
+    cbz     x2, exec_kernel     // Don't clear BSS if it is empty
 
 clear_bss:
-    cbz     x2, exec_kernel
     str     xzr, [x1], 8        // Zero out [x1] and increment x1 by 8 bytes
     sub     x2, x2, 1           // Decrement counter
     cbnz    w2, clear_bss       // Loop until counter is zero
 
 exec_kernel:
-    bl      main                // Call kernel's main function. If it returns, then halt the
-                                // main core too
+    // Call kernel's main function. If it returns, then halt the main core too.
+    bl      main
 
 halt:
     wfe                         // Enter low power standby mode until events occurs

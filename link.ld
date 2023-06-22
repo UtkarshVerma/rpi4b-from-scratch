@@ -59,9 +59,7 @@ SECTIONS {
 
     /*
      * Discard unnecessary sections from the ELF.
-     *
      * .comment: includes compiler metadata
-     *
      */
     /DISCARD/ : { *(.comment) }
 }

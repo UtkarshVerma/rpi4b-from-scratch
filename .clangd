@@ -1,3 +1,5 @@
 CompileFlags:
   Add:
     - -Wno-main-return-type
+    - -Wswitch-enum
+    - -I../include

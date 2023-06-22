@@ -1,3 +1,7 @@
 BasedOnStyle: Google
 IndentWidth: 4
-UseTab: Never
+ColumnLimit: 79
+AlignArrayOfStructures: Left
+AlignConsecutiveMacros: true
+AlignConsecutiveAssignments: true
+AllowShortFunctionsOnASingleLine: None
