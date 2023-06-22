@@ -1,7 +1,5 @@
 #pragma once
 
-#include "memory.h"
-
 typedef enum {
     GPIO_INPUT,
     GPIO_OUTPUT,
