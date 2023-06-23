@@ -27,10 +27,10 @@ LDFLAGS := -nostdlib -nostartfiles -static
 LDFLAGS += -Wl,--build-id=none,--gc-sections
 LDFLAGS += -Wl,-Map=$(BUILD_DIR)/$(TARGET).map,-T$(LDFILE)
 
-S_SRCS := $(wildcard $(SRC_DIR)/*.s)
+S_SRCS := $(wildcard $(SRC_DIR)/*.s) $(wildcard $(SRC_DIR)/**/*.s)
 S_OBJS += $(subst $(SRC_DIR)/,$(BUILD_DIR)/,$(S_SRCS:.s=.o))
 
-C_SRCS := $(wildcard $(SRC_DIR)/*.c)
+C_SRCS := $(wildcard $(SRC_DIR)/*.c) $(wildcard $(SRC_DIR)/**/*.c)
 C_OBJS := $(subst $(SRC_DIR)/,$(BUILD_DIR)/,$(C_SRCS:.c=.o))
 
 # Prettify output
@@ -43,15 +43,13 @@ endif
 
 all: $(BUILD_DIR)/$(TARGET).img
 
-$(BUILD_DIR):
-	$(PRINTF) "MKDIR" $@
-	$Qmkdir -p $@
-
-$(BUILD_DIR)/%.o: $(SRC_DIR)/%.s | $(BUILD_DIR)
+$(BUILD_DIR)/%.o: $(SRC_DIR)/%.s
+	$Qmkdir -p $(@D)
 	$(PRINTF) "AS" $@
 	$Q$(COMPILE.s) -o $@ $<
 
-$(BUILD_DIR)/%.o: $(SRC_DIR)/%.c | $(BUILD_DIR)
+$(BUILD_DIR)/%.o: $(SRC_DIR)/%.c
+	$Qmkdir -p $(@D)
 	$(PRINTF) "CC" $@
 	$Q$(COMPILE.c) -o $@ $<
 
@@ -69,6 +67,6 @@ $(BUILD_DIR)/$(TARGET).img: $(BUILD_DIR)/$(TARGET).elf
 
 clean:
 	$(PRINTF) "CLEAN" $(BUILD_DIR)
-	$Q$(RM) $(BUILD_DIR)/*
+	$Q$(RM) -r $(BUILD_DIR)
 
 .PHONY: all clean
