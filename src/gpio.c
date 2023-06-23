@@ -42,3 +42,7 @@ int gpio_clear_pin(unsigned int pin) {
 int gpio_set_pin(unsigned int pin) {
     return gpio_set_reg(&GPSET0, pin, 1, 1);
 }
+
+int gpio_set_pull(unsigned int pin, gpio_pull value) {
+    return gpio_set_reg(&GPIO_PUP_PDN_CTRL_REG0, pin, value, 2);
+}
