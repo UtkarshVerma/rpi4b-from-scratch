@@ -10,3 +10,4 @@ typedef volatile mem_data* mem_ptr;
 
 #define MMIO_BASE_ADDR        0xfe000000
 #define MMIO_GPIO_BASE_OFFSET 0x200000
+#define MMIO_AUX_BASE_OFFSET  0x215000
