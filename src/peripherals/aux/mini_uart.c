@@ -1,8 +1,8 @@
-#include "aux/mini_uart.h"
+#include "peripherals/aux/mini_uart.h"
 
-#include "aux/main.h"
-#include "gpio.h"
 #include "main.h"
+#include "peripherals/aux.h"
+#include "peripherals/gpio.h"
 #include "util.h"
 
 #define TX_PIN 14

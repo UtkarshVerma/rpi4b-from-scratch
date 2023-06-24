@@ -1,4 +1,4 @@
-#include "gpio.h"
+#include "peripherals/gpio.h"
 
 #include "memory.h"
 

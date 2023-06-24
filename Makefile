@@ -27,10 +27,10 @@ LDFLAGS := -nostdlib -nostartfiles -static
 LDFLAGS += -Wl,--build-id=none,--gc-sections
 LDFLAGS += -Wl,-Map=$(BUILD_DIR)/$(TARGET).map,-T$(LDFILE)
 
-S_SRCS := $(wildcard $(SRC_DIR)/*.s) $(wildcard $(SRC_DIR)/**/*.s)
+S_SRCS := $(wildcard $(SRC_DIR)/*.s $(SRC_DIR)/*/*.s $(SRC_DIR)/*/*/*.s)
 S_OBJS += $(subst $(SRC_DIR)/,$(BUILD_DIR)/,$(S_SRCS:.s=.o))
 
-C_SRCS := $(wildcard $(SRC_DIR)/*.c) $(wildcard $(SRC_DIR)/**/*.c)
+C_SRCS := $(wildcard $(SRC_DIR)/*.c $(SRC_DIR)/*/*.c $(SRC_DIR)/*/*/*.c)
 C_OBJS := $(subst $(SRC_DIR)/,$(BUILD_DIR)/,$(C_SRCS:.c=.o))
 
 # Prettify output
