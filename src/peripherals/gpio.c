@@ -4,12 +4,14 @@
 
 #define GPIO_MAX_PIN 53
 
-#define GPFSEL0                MMIO_REG(GPIO, 0x00)
-#define GPSET0                 MMIO_REG(GPIO, 0x1c)
-#define GPCLR0                 MMIO_REG(GPIO, 0x28)
-#define GPIO_PUP_PDN_CTRL_REG0 MMIO_REG(GPIO, 0xe4)
+#define GPIO_BASE_ADDR (MMIO_BASE_ADDR + 0x200000)
 
-static int gpio_set_reg(mem_ptr base_reg, unsigned int pin, mem_data value,
+#define GPFSEL0                MEM_REG(GPIO_BASE_ADDR, 0x00)
+#define GPSET0                 MEM_REG(GPIO_BASE_ADDR, 0x1c)
+#define GPCLR0                 MEM_REG(GPIO_BASE_ADDR, 0x28)
+#define GPIO_PUP_PDN_CTRL_REG0 MEM_REG(GPIO_BASE_ADDR, 0xe4)
+
+static int gpio_set_reg(mem_ptr base_reg, unsigned int pin, mem_reg value,
                         unsigned int field_size) {
     if (pin > GPIO_MAX_PIN) return 1;
 
@@ -17,7 +19,7 @@ static int gpio_set_reg(mem_ptr base_reg, unsigned int pin, mem_data value,
     if (value > field_mask) return 1;
 
     // GPIO registers are uniformly subdivided
-    unsigned int n_fields = sizeof(mem_data) * 8 / field_size;
+    unsigned int n_fields = sizeof(mem_reg) * 8 / field_size;
 
     // Registers are sequentially mapped for each `n_field` GPIOs
     mem_ptr reg        = base_reg + pin / n_fields;

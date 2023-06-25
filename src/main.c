@@ -1,8 +1,15 @@
-#include "main.h"
+#include "uart.h"
 
-#include "peripherals/aux/mini_uart.h"
+void delay() {
+    volatile int i = 0;
+    while (i < 0xf0000) i++;
+}
 
 void main() {
-    mini_uart_init();
-    mini_uart_write("Hello, world!\n");
+    uart_init(UART0);
+
+    while (1) {
+        uart_write(UART0, "Hello, world from UART0!\n");
+        delay();
+    }
 }

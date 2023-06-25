@@ -2,6 +2,5 @@
 
 #include "memory.h"
 
-#define AUX_ENABLES MMIO_REG(AUX, 0x04)
-
-void aux_init();
+#define AUX_BASE_ADDR (MMIO_BASE_ADDR + 0x215000)
+#define AUX_ENABLES   MEM_REG(AUX_BASE_ADDR, 0x04)
