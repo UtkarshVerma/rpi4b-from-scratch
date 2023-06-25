@@ -25,8 +25,6 @@ void uart_init(uart_port port) {
     const uart_config config = configs[port];
     gpio_set_function(config.tx_pin, config.alt_func);
     gpio_set_function(config.rx_pin, config.alt_func);
-    gpio_set_pull(config.tx_pin, GPIO_PULL_NONE);
-    gpio_set_pull(config.rx_pin, GPIO_PULL_NONE);
 
     switch (port) {
         case UART1:
