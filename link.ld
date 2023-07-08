@@ -3,14 +3,14 @@ ENTRY(_start)
 __stack_size = 1K;
 
 MEMORY {
-    ram   (rwx) : ORIGIN = 0x00000, LENGTH = 2K
-
     /*
      * Align the ROM in the ELF to suit the RPi bootloader's kernel load
      * address. ROM is where the kernel will reside. This value is for running
      * in 64-bit mode.
      */
     rom   (rx)  : ORIGIN = 0x80000, LENGTH = 4K
+
+    ram   (rwx) : ORIGIN = ORIGIN(rom) + LENGTH(rom), LENGTH = 2K
 
     /* 
      * Stack grows towards lower addresses in AAPCS64. Therefore place it
