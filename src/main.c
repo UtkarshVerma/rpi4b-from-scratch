@@ -1,6 +1,6 @@
 #include "uart.h"
 
-#define LED_GPIO 17
+#define CONSOLE_UART UART1
 
 // Bust wait delay
 void delay() {
@@ -9,10 +9,10 @@ void delay() {
 }
 
 void main() {
-    uart_init(UART0);
+    uart_init(CONSOLE_UART, 115200);
 
     while (1) {
-        uart_write(UART0, "Hello, world from UART0!\n");
+        uart_write(CONSOLE_UART, "Hello, world!\n");
         delay();
     }
 }
