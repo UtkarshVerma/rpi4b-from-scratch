@@ -1,5 +1,8 @@
 #include "uart.h"
 
+#define LED_GPIO 17
+
+// Bust wait delay
 void delay() {
     volatile int i = 0;
     while (i < 0xf0000) i++;

@@ -17,7 +17,6 @@ typedef enum {
     GPIO_PULL_DOWN,
 } gpio_pull;
 
-int gpio_set_pull(unsigned int pin, gpio_pull value);
 int gpio_set_function(unsigned int pin, gpio_function value);
 int gpio_set_pin(unsigned int pin);
 int gpio_clear_pin(unsigned int pin);
