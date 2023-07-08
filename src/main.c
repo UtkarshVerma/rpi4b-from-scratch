@@ -1,6 +1,6 @@
 #include "gpio.h"
 
-#define LED_GPIO 18
+#define LED_GPIO 17
 
 // Bust wait delay
 void delay() {
