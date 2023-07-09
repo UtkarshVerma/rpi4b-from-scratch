@@ -1,4 +1,4 @@
-.section ".text.boot"           // Tell linker to put this at the start of the kernel
+.section ".init"                // Tell linker to put this at the start of the kernel
 .global _start                  // Make the _start label accessible outside this file
 
 _start:
