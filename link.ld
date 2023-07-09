@@ -1,36 +1,34 @@
 ENTRY(_start)
 
-__stack_size = 1K;
+SECTIONS {
+    /* Raspberry Pi firmware's kernel load address for 64-bit mode */
+    __kernel_load_address = 0x80000;
 
-MEMORY {
     /*
-     * Align the ROM in the ELF to suit the RPi bootloader's kernel load
-     * address. ROM is where the kernel will reside. This value is for running
-     * in 64-bit mode.
-     */
-    rom   (rx)  : ORIGIN = 0x80000, LENGTH = 4K
-
-    ram   (rwx) : ORIGIN = ORIGIN(rom) + LENGTH(rom), LENGTH = 2K
-
-    /* 
      * Stack grows towards lower addresses in AAPCS64. Therefore place it
      * before the ROM to avoid any clobbering.
      */
-    stack (rw)  : ORIGIN = ORIGIN(rom) - __stack_size, LENGTH = __stack_size
-}
+    __stack_base = __kernel_load_address;
 
-SECTIONS {
-    .text : {
-        /* Don't discard .text.boot as it is referenced by the bootloader */
-        KEEP(*(.text.boot))
+    /*
+     * Align .init to suit the RPi bootloader's kernel load address. As it is
+     * not referenced in the code, use KEEP to ensure it's not stripped from
+     * the ELF.
+     */
+    .init __kernel_load_address : { *(.init) }
 
-        *(.text)
-        *(.gnu.linkonce.t*)
-    } > rom
-    
-    .rodata : { *(.rodata*) *(.gnu.linkonce.d*) } > rom
+    /* .text contains the compiled C code. */
+    .text   : { *(.text) *(.gnu.linkonce.t*) }
 
-    .data   : { *(.data*) *(.gnu.linkonce.d*) } > ram
+    /* Add padding executable .text from data sections */
+    . = ALIGN(8);
+
+    .rodata : { *(.rodata*) *(.gnu.linkonce.d*) }
+
+    /* Add padding to separate R and RW sections */
+    . = ALIGN(8);
+
+    .data   : { *(.data*) *(.gnu.linkonce.d*) }
 
     /*
      * BSS contains uninitialized variables which default to zero. Instead of
@@ -51,11 +49,10 @@ SECTIONS {
 
         . = ALIGN(8);
         __bss_end = .;
-    } > ram
+    }
     /* BSS is dword aligned */
     __bss_size = (__bss_end - __bss_start) >> 3;
 
-    __stack_base = ORIGIN(stack) + LENGTH(stack);
 
     /*
      * Discard unnecessary sections from the ELF.
