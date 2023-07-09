@@ -1,4 +1,5 @@
 ENTRY(_start)
+OUTPUT_FORMAT("elf64-littleaarch64")
 
 SECTIONS {
     /* Raspberry Pi firmware's kernel load address for 64-bit mode */
@@ -15,20 +16,13 @@ SECTIONS {
      * not referenced in the code, use KEEP to ensure it's not stripped from
      * the ELF.
      */
-    .init __kernel_load_address : { *(.init) }
+    . = __kernel_load_address;
+    
+    /* .startup contains the bootstrapping routine for our C code. */
+    .init : { *(.init) }
 
     /* .text contains the compiled C code. */
-    .text   : { *(.text) *(.gnu.linkonce.t*) }
-
-    /* Add padding executable .text from data sections */
-    . = ALIGN(8);
-
-    .rodata : { *(.rodata*) *(.gnu.linkonce.d*) }
-
-    /* Add padding to separate R and RW sections */
-    . = ALIGN(8);
-
-    .data   : { *(.data*) *(.gnu.linkonce.d*) }
+    .text : { *(.text) *(.gnu.linkonce.t*) }
 
     /*
      * BSS contains uninitialized variables which default to zero. Instead of
@@ -38,27 +32,33 @@ SECTIONS {
      * NOLOAD is used to indicate that this section should not be loaded into
      * memory.
      */
+    /* str instruction operates on DWORDs so we align .bss to DWORDs. */
+    . = ALIGN(8);
+    __bss_start = .;
     .bss (NOLOAD) : {
-        /* Align .bss to dword as the `str` instruction fills dwords */
-        . = ALIGN(8);
-        __bss_start = .;
-
         *(.bss*)
         *(.gnu.linkonce.b*)
         *(COMMON)
-
-        . = ALIGN(8);
-        __bss_end = .;
     }
-    /* BSS is dword aligned */
-    __bss_size = (__bss_end - __bss_start) >> 3;
+    /* BSS is DWORD aligned */
+    __bss_end = .;
+    __bss_size = (__bss_end - __bss_start) / 8;
 
+    /* .rodata contains readonly data. */
+    .rodata : { *(.rodata*) *(.gnu.linkonce.d*) }
+
+    /*
+     * Ensure enough padding between executable and data section. .rodata is
+     * linked in the same segment as .text, so we do the alignment here.
+     */
+    . = ALIGN(CONSTANT(MAXPAGESIZE));
+
+    /* .data contains mutable variables */
+    .data : { *(.data*) *(.gnu.linkonce.d*) }
 
     /*
      * Discard unnecessary sections from the ELF.
-     *
-     * .comment: includes compiler metadata
-     *
+     *     .comment: includes compiler metadata
      */
     /DISCARD/ : { *(.comment) }
 }
