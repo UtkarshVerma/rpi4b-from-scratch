@@ -1,6 +1,7 @@
 #include "gpio.h"
 
-#define LED_GPIO 17
+// Blink the ACT LED
+#define LED_GPIO 42
 
 // Bust wait delay
 void delay() {
