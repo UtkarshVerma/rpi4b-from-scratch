@@ -1,7 +1,8 @@
 BasedOnStyle: Google
 IndentWidth: 4
 ColumnLimit: 79
-AlignArrayOfStructures: Left
 AlignConsecutiveMacros: true
 AlignConsecutiveAssignments: true
 AllowShortFunctionsOnASingleLine: None
+AllowShortIfStatementsOnASingleLine: false
+AllowShortEnumsOnASingleLine: false

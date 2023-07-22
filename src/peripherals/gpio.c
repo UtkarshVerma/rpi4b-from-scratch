@@ -12,10 +12,12 @@
 
 static int gpio_set_reg(mem_reg* base_reg, unsigned int pin, mem_reg value,
                         unsigned int field_size) {
-    if (pin > GPIO_MAX_PIN) return 1;
+    if (pin > GPIO_MAX_PIN)
+        return 1;
 
     unsigned int field_mask = (1 << field_size) - 1;
-    if (value > field_mask) return 1;
+    if (value > field_mask)
+        return 1;
 
     // GPIO registers are uniformly subdivided
     unsigned int n_fields = sizeof(mem_reg) * 8 / field_size;

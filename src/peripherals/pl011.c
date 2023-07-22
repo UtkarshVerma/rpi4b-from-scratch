@@ -63,7 +63,8 @@ void pl011_init(const pl011_context* context) {
 
 void pl011_write(const pl011_context* context, const char* buffer) {
     while (*buffer) {
-        if (*buffer == '\n') pl011_write_byte(context, '\r');
+        if (*buffer == '\n')
+            pl011_write_byte(context, '\r');
         pl011_write_byte(context, *buffer);
 
         buffer++;
