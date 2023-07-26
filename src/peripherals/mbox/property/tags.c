@@ -6,12 +6,12 @@
 void tag_init(tag* t, uint32_t tag) {
     const tag_metadata* metadata;
     unsigned int tag_end;
-    switch (TAG_BASE(tag)) {
-        case VIDEOCORE_TAG_BASE:
+    switch (TAG_KIND(tag)) {
+        case VIDEOCORE_TAG:
             metadata = videocore_tag_metadata;
             tag_end  = VIDEOCORE_TAG_END;
             break;
-        case HARDWARE_TAG_BASE:
+        case HARDWARE_TAG:
             metadata = hardware_tag_metadata;
             tag_end  = HARDWARE_TAG_END;
             break;

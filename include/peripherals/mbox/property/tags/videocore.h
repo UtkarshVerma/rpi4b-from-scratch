@@ -6,7 +6,7 @@ typedef union {
     struct {
     } request;
     struct {
-        const volatile uint32_t firmware_revision;
+        uint32_t firmware_revision;
     } response;
 } videocore_get_firmware_revision_buffer;
 
@@ -17,7 +17,9 @@ typedef union {
 #include "../tags.h"
 
 typedef enum {
-    VIDEOCORE_GET_FIRMWARE_REVISION = VIDEOCORE_TAG_BASE,
+    VIDEOCORE_TAG_BASE = TAG_KIND_BASE(VIDEOCORE_TAG),
+
+    VIDEOCORE_GET_FIRMWARE_REVISION,
 
     VIDEOCORE_TAG_END,
 } videocore_tag;

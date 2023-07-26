@@ -1,13 +1,16 @@
 #include "peripherals/mbox/property/tags/videocore.h"
 
 #include "peripherals/mbox/property/tags.h"
+#include "util.h"
 
-#define VIDEOCORE_TAG_ID_BASE 0x00000000
+#define TAG_ID_BASE      0x00000000
+#define INDEX(tag)       TAG_COMMAND(VIDEOCORE_##tag)
+#define BUFFER_SIZE(tag) MEMBER_SIZE(videocore_tag_buffer, tag)
 
 const tag_metadata videocore_tag_metadata[VIDEOCORE_TAG_COUNT] = {
-    [TAG_COMMAND(VIDEOCORE_GET_FIRMWARE_REVISION)] =
+    [INDEX(GET_FIRMWARE_REVISION)] =
         {
-            .id          = VIDEOCORE_TAG_ID_BASE + 1,
-            .buffer_size = sizeof(videocore_get_firmware_revision_buffer),
+            .id          = TAG_ID_BASE + 1,
+            .buffer_size = BUFFER_SIZE(get_firmware_revision),
         },
 };

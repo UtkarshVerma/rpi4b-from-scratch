@@ -17,9 +17,9 @@ typedef union {
 
 // This has to be 16-byte aligned as last nibble is discarded from the pointer
 // while making the mailbox call
-typedef volatile struct {
-    const uint32_t size;
-    message_buffer_status_code status;
+typedef struct {
+    uint32_t size;
+    volatile message_buffer_status_code status;
     tag tag;  // TODO: Make this support multiple tags
     const tag null_tag;
 } __attribute__((aligned(16))) mbox_property_message_buffer;
