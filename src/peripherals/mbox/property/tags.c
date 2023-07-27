@@ -2,6 +2,7 @@
 
 #include "peripherals/mbox/property/tags/hardware.h"
 #include "peripherals/mbox/property/tags/videocore.h"
+#include "util/tags.h"
 
 void tag_init(tag* t, uint32_t tag) {
     const tag_metadata* metadata;
@@ -22,7 +23,7 @@ void tag_init(tag* t, uint32_t tag) {
     if (tag >= tag_end)
         return;
 
-    t->id          = metadata[TAG_COMMAND(tag)].id;
-    t->buffer_size = metadata[TAG_COMMAND(tag)].buffer_size;
+    t->id          = metadata[TAG_METADATA_INDEX(tag)].id;
+    t->buffer_size = metadata[TAG_METADATA_INDEX(tag)].buffer_size;
     t->status_code = 0;
 }

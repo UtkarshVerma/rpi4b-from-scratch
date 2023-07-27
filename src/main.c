@@ -3,7 +3,6 @@
 #include "peripherals/mbox.h"
 #include "peripherals/mbox/property/message.h"
 #include "peripherals/mbox/property/tags/hardware.h"
-#include "peripherals/mbox/property/tags/videocore.h"
 #include "uart.h"
 
 #define CONSOLE_UART UART1
