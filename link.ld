@@ -25,6 +25,12 @@ SECTIONS {
     .text : { *(.text) *(.gnu.linkonce.t*) }
 
     /*
+     * Put padding between data and text sections to ensure data is not marked
+     * as executable.
+     */
+    . = ALIGN(CONSTANT(MAXPAGESIZE));
+
+    /*
      * BSS contains uninitialized variables which default to zero. Instead of
      * copying the entire BSS section to memory, it is faster to have the
      * linker compute the offset and length of the BSS section and tell the
@@ -32,8 +38,6 @@ SECTIONS {
      * NOLOAD is used to indicate that this section should not be loaded into
      * memory.
      */
-    /* str instruction operates on DWORDs so we align .bss to DWORDs. */
-    . = ALIGN(8);
     __bss_start = .;
     .bss (NOLOAD) : {
         *(.bss*)
@@ -44,14 +48,12 @@ SECTIONS {
     __bss_end = .;
     __bss_size = (__bss_end - __bss_start) / 8;
 
+    . = ALIGN(CONSTANT(COMMONPAGESIZE));
+
     /* .rodata contains readonly data. */
     .rodata : { *(.rodata*) *(.gnu.linkonce.d*) }
 
-    /*
-     * Ensure enough padding between executable and data section. .rodata is
-     * linked in the same segment as .text, so we do the alignment here.
-     */
-    . = ALIGN(CONSTANT(MAXPAGESIZE));
+    . = ALIGN(CONSTANT(COMMONPAGESIZE));
 
     /* .data contains mutable variables */
     .data : { *(.data*) *(.gnu.linkonce.d*) }
