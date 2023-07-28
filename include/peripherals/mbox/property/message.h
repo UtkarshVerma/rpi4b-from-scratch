@@ -24,5 +24,5 @@ typedef struct {
     const tag null_tag;
 } __attribute__((aligned(16))) mbox_property_message_buffer;
 
-void mbox_property_message_init(uint32_t tag_id);
+void mbox_property_message_init(tag_id tag_id);
 mbox_property_message_buffer* mbox_property_message_get_buffer_pointer();

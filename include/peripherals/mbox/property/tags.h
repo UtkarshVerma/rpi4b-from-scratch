@@ -2,33 +2,40 @@
 
 #include <stdint.h>
 
+#include "tags/hardware.h"
+#include "tags/videocore.h"
+
 typedef struct {
     uint32_t id;
     uint32_t buffer_size;
 } tag_metadata;
 
-#define TAG_KIND_BASE(kind) (kind << 16)
-#define TAG_KIND(tag)       (tag >> 16)
-#define TAG_COMMAND(tag)    (tag & 0xffff)
+#define TAGS       \
+    VIDEOCORE_TAGS \
+    HARDWARE_TAGS
 
-typedef enum {
-    VIDEOCORE_TAG,
-    HARDWARE_TAG,
-} tag_kind;
-
-#include "tags/hardware.h"
-#include "tags/videocore.h"
-
+#define TAG(enum, name, id) name##_tag_buffer name;
+// clang-format off
 typedef union {
-    videocore_tag_buffer videocore;
-    hardware_tag_buffer hardware;
+    TAGS
 } tag_buffer;
+// clang-format on
+#undef TAG
+
+#define TAG(enum, name, id) enum,
+// clang-format off
+typedef enum {
+    TAGS
+    TAG_COUNT,
+} tag_id;
+// clang-format on
+#undef TAG
 
 typedef struct {
-    uint32_t id;
+    tag_id id;
     uint32_t buffer_size;
     volatile uint32_t status_code;
     volatile tag_buffer buffer;
 } tag;
 
-void tag_init(tag* t, uint32_t tag_id);
+void tag_init(tag* t, tag_id tag_id);

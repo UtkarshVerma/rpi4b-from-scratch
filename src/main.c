@@ -2,7 +2,7 @@
 
 #include "peripherals/mbox.h"
 #include "peripherals/mbox/property/message.h"
-#include "peripherals/mbox/property/tags/hardware.h"
+#include "peripherals/mbox/property/tags.h"
 #include "uart.h"
 
 #define CONSOLE_UART UART1
@@ -56,6 +56,6 @@ void main() {
     }
 
     uint32_t revision =
-        buffer->tag.buffer.hardware.get_board_revision.response.board_revision;
+        buffer->tag.buffer.hardware_get_board_revision.response.board_revision;
     uart_write(CONSOLE_UART, itoa(revision));
 }

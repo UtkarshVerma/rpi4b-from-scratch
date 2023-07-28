@@ -1,29 +1,49 @@
 #include "peripherals/mbox/property/tags.h"
 
-#include "peripherals/mbox/property/tags/hardware.h"
-#include "peripherals/mbox/property/tags/videocore.h"
-#include "util/tags.h"
+#include "uart.h"
+#include "util.h"
 
-void tag_init(tag* t, uint32_t tag) {
-    const tag_metadata* metadata;
-    unsigned int tag_end;
-    switch (TAG_KIND(tag)) {
-        case VIDEOCORE_TAG:
-            metadata = videocore_tag_metadata;
-            tag_end  = VIDEOCORE_TAG_END;
-            break;
-        case HARDWARE_TAG:
-            metadata = hardware_tag_metadata;
-            tag_end  = HARDWARE_TAG_END;
-            break;
-        default:
-            tag_end = 0;
+#define TAG(enum, name, tag_id)                       \
+    [enum] = {                                        \
+        .id          = tag_id,                        \
+        .buffer_size = MEMBER_SIZE(tag_buffer, name), \
+    },
+static const tag_metadata metadata[TAG_COUNT] = {TAGS};
+#undef TAG
+
+static char buf[100];
+
+static char* itoa(uint32_t n) {
+    char* c = buf + sizeof(buf) - 1;
+    *c      = '\0';
+    c--;
+    *c = '\n';
+
+    if (n == 0) {
+        c--;
+        *c = '0';
+        return c;
     }
 
-    if (tag >= tag_end)
+    while (n) {
+        c--;
+        *c = n % 10 + '0';
+        n /= 10;
+    }
+
+    return c;
+}
+
+void tag_init(tag* t, tag_id tag) {
+    if (tag >= ARRAY_SIZE(metadata))
         return;
 
-    t->id          = metadata[TAG_METADATA_INDEX(tag)].id;
-    t->buffer_size = metadata[TAG_METADATA_INDEX(tag)].buffer_size;
+    const tag_metadata* m = &metadata[tag];
+
+    t->id          = m->id;
+    t->buffer_size = m->buffer_size;
+    // HACK: Without this UART delay, the previous assignment gets stuck for
+    // some reason
+    uart_write(UART1, itoa(m->buffer_size));
     t->status_code = 0;
 }

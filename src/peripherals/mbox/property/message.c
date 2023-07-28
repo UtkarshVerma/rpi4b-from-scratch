@@ -11,10 +11,10 @@ static mbox_property_message_buffer buffer = {
     .null_tag = {.id = NULL_TAG_ID},
 };
 
-void mbox_property_message_init(uint32_t tag_id) {
+void mbox_property_message_init(tag_id tag_id) {
     buffer.status.request_code = PROCESS_REQUEST;
 
-    tag* t = (tag*)&buffer.tag;
+    tag* t = &buffer.tag;
     tag_init(t, tag_id);
 }
 
