@@ -36,6 +36,6 @@ typedef struct {
     uint32_t buffer_size;
     volatile uint32_t status_code;
     volatile tag_buffer buffer;
-} tag;
+} __attribute__((packed)) tag;
 
 void tag_init(tag* t, tag_id tag_id);
