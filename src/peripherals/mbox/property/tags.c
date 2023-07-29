@@ -4,27 +4,29 @@
 
 #include "util.h"
 
+typedef struct {
+    uint32_t id;
+    uint32_t buffer_size;
+} tag_metadata;
+
 #define TAG(enum, name, tag_id)                                     \
     [enum] = {                                                      \
         .id          = tag_id,                                      \
         .buffer_size = MEMBER_SIZE(mbox_property_tag_buffer, name), \
     },
-// clang-format off
-static const tag_metadata metadata[TAG_COUNT] = {
-    TAGS
-};
-// clang-format on
+static const tag_metadata metadata[TAG_COUNT] = {TAGS};
 #undef TAG
 
-int mbox_property_tag_init(mbox_property_tag_id id, mbox_property_tag* tag) {
+int mbox_property_tag_init(mbox_property_tag_id id,
+                           mbox_property_tag_header* header) {
     if (id >= ARRAY_SIZE(metadata))
         return 1;
 
     const tag_metadata* m = &metadata[id];
 
-    tag->id          = m->id;
-    tag->buffer_size = m->buffer_size;
-    tag->status_code = 0;
+    header->id          = m->id;
+    header->buffer_size = m->buffer_size;
+    header->status_code = 0;
 
     return 0;
 }
