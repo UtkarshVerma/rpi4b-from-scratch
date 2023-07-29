@@ -1,7 +1,5 @@
 #pragma once
 
-#include <stdint.h>
-
 typedef enum {
     POWER_MANAGEMENT = 0,
     FRAMEBUFFER,
@@ -15,4 +13,4 @@ typedef enum {
 } mbox_channel;
 
 unsigned int mbox_read(mbox_channel channel);
-void mbox_write(mbox_channel channel, uintptr_t data);
+void mbox_write(mbox_channel channel, void* data);

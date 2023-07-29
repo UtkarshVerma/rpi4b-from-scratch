@@ -26,12 +26,12 @@ unsigned int mbox_read(mbox_channel channel) {
     }
 }
 
-void mbox_write(mbox_channel channel, uintptr_t data) {
+void mbox_write(mbox_channel channel, void* data) {
     // Wait until the mailbox is empty
     while (MBOX_STATUS & MBOX_STATUS_FULL)
         ;
 
-    mem_reg message = data & MBOX_MESSAGE_DATA_MASK;
+    mem_reg message = (uintptr_t)data & MBOX_MESSAGE_DATA_MASK;
     message |= channel & MBOX_MESSAGE_CHANNEL_MASK;
     MBOX_WRITE = message;
 }

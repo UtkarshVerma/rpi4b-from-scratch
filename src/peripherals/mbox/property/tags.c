@@ -1,22 +1,30 @@
 #include "peripherals/mbox/property/tags.h"
 
+#include <stddef.h>
+
 #include "util.h"
 
-#define TAG(enum, name, tag_id)                       \
-    [enum] = {                                        \
-        .id          = tag_id,                        \
-        .buffer_size = MEMBER_SIZE(tag_buffer, name), \
+#define TAG(enum, name, tag_id)                                     \
+    [enum] = {                                                      \
+        .id          = tag_id,                                      \
+        .buffer_size = MEMBER_SIZE(mbox_property_tag_buffer, name), \
     },
-static const tag_metadata metadata[TAG_COUNT] = {TAGS};
+// clang-format off
+static const tag_metadata metadata[TAG_COUNT] = {
+    TAGS
+};
+// clang-format on
 #undef TAG
 
-void tag_init(tag* t, tag_id tag) {
-    if (tag >= ARRAY_SIZE(metadata))
-        return;
+int mbox_property_tag_init(mbox_property_tag_id id, mbox_property_tag* tag) {
+    if (id >= ARRAY_SIZE(metadata))
+        return 1;
 
-    const tag_metadata* m = &metadata[tag];
+    const tag_metadata* m = &metadata[id];
 
-    t->id          = m->id;
-    t->buffer_size = m->buffer_size;
-    t->status_code = 0;
+    tag->id          = m->id;
+    tag->buffer_size = m->buffer_size;
+    tag->status_code = 0;
+
+    return 0;
 }

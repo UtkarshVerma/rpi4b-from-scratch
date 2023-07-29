@@ -20,9 +20,12 @@ typedef union {
 typedef struct {
     uint32_t size;
     volatile message_buffer_status_code status;
-    tag tag;  // TODO: Make this support multiple tags
-    const tag null_tag;
+    mbox_property_tag tags[4];  // TODO: Make this configurable
 } __attribute__((aligned(16))) mbox_property_message_buffer;
 
-void mbox_property_message_init(tag_id tag_id);
-mbox_property_message_buffer* mbox_property_message_get_buffer_pointer();
+// TODO: Make this static?
+extern mbox_property_message_buffer buffer;
+
+void mbox_property_message_init();
+volatile mbox_property_tag_buffer* mbox_property_message_append_tag(
+    mbox_property_tag_id id);
