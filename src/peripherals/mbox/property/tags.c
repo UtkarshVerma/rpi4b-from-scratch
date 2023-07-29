@@ -9,10 +9,10 @@ typedef struct {
     uint32_t buffer_size;
 } tag_metadata;
 
-#define TAG(enum, name, tag_id)                                     \
-    [enum] = {                                                      \
-        .id          = tag_id,                                      \
-        .buffer_size = MEMBER_SIZE(mbox_property_tag_buffer, name), \
+#define TAG(enum, name, tag_id)                   \
+    [enum] = {                                    \
+        .id          = tag_id,                    \
+        .buffer_size = sizeof(name##_tag_buffer), \
     },
 static const tag_metadata metadata[TAG_COUNT] = {TAGS};
 #undef TAG

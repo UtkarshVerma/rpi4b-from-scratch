@@ -54,6 +54,7 @@ void main() {
                 .header.id = FRAMEBUFFER_SET_PHYSICAL_DIMENSIONS,
                 .buffer    = {.request =
                                   {
+                                   // FIXME: Passing two args freezes RPi
                                       .width  = 640,
                                       .height = 480,
                                }},

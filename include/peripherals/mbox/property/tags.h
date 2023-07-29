@@ -14,14 +14,6 @@
     HARDWARE_TAGS  \
     FRAMEBUFFER_TAGS
 
-#define TAG(enum, name, id) name##_tag_buffer name;
-// clang-format off
-typedef union {
-    TAGS
-} mbox_property_tag_buffer;
-// clang-format on
-#undef TAG
-
 #define TAG(enum, name, id) enum,
 // clang-format off
 typedef enum {
