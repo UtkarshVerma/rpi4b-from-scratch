@@ -1,94 +1,50 @@
+#include "main.h"
+
 #include <stdint.h>
 
 #include "peripherals/mbox.h"
 #include "peripherals/mbox/property/message.h"
 #include "peripherals/mbox/property/tags.h"
-#include "peripherals/mbox/property/tags/framebuffer.h"
-#include "peripherals/mbox/property/tags/hardware.h"
-#include "peripherals/mbox/property/tags/videocore.h"
 #include "uart.h"
+#include "util.h"
 
-#define CONSOLE_UART UART1
-
-// Bust wait delay
-void delay() {
-    volatile int i = 0;
-    while (i < 0xf0000) i++;
-}
-
-static char buf[100];
-
-char* itoa(uint32_t n) {
-    char* c = buf + sizeof(buf) - 1;
-    *c      = '\0';
-    c--;
-    *c = '\n';
-
-    if (n == 0) {
-        c--;
-        *c = '0';
-        return c;
-    }
-
-    while (n) {
-        c--;
-        *c = n % 10 + '0';
-        n /= 10;
-    }
-
-    return c;
-}
+static MBOX_PROPERTY_MESSAGE_BUFFER(buffer, 100);
 
 void main() {
     uart_init(CONSOLE_UART, 115200);
 
-    struct {
-        mbox_property_message_buffer_header header;
-        framebuffer_set_physical_dimensions_tag a;
-        // framebuffer_set_virtual_dimensions_tag b;
-        // framebuffer_set_depth_tag c;
-        uint32_t null_tag;
-    } __attribute__((aligned(16), packed)) buffer = {
-        .a =
-            {
-                .header.id = FRAMEBUFFER_SET_PHYSICAL_DIMENSIONS,
-                .buffer    = {.request =
-                                  {
-                                   // FIXME: Passing two args freezes RPi
-                                      .width  = 640,
-                                      .height = 480,
-                               }},
-            },
-        // .b =
-        //     {
-        //         .header.id = FRAMEBUFFER_SET_VIRTUAL_DIMENSIONS,
-        //         .buffer    = {.request =
-        //                           {
-        //                               .width  = 640,
-        //                               .height = 480,
-        //                        }},
-        //     },
-        // .c =
-        //     {
-        //         .header.id = FRAMEBUFFER_SET_DEPTH,
-        //         .buffer    = {.request =
-        //                           {
-        //                               .bits_per_pixel = 24,
-        //                        }},
-        //     },
-        .null_tag = NULL_TAG_ID,
-    };
+    MBOX_PROPERTY_MESSAGE_BUFFER_LAYOUT(
+        hardware_get_board_revision_tag a; hardware_get_board_revision_tag c;
+        hardware_get_board_revision_tag d;
+        hardware_get_board_revision_tag b;)* mbox_buffer = (void*)buffer;
+    mbox_buffer->a.header.id = HARDWARE_GET_BOARD_REVISION;
+    mbox_buffer->b.header.id = HARDWARE_GET_BOARD_REVISION;
+    mbox_buffer->c.header.id = HARDWARE_GET_BOARD_REVISION;
+    mbox_buffer->d.header.id = HARDWARE_GET_BOARD_REVISION;
 
-    for (unsigned int i = 0; i < sizeof(buffer) / sizeof(uint32_t); i++)
-        uart_write(CONSOLE_UART, itoa(((uint32_t*)&buffer)[i]));
+    uart_write(CONSOLE_UART, ">---\n");
+    for (unsigned int i = 0; i < sizeof(*mbox_buffer) / sizeof(buffer[0]);
+         i++) {
+        uart_write(CONSOLE_UART, itoa(buffer[i]));
+    }
+    uart_write(CONSOLE_UART, "---<\n");
 
-    mbox_property_message_init(&buffer, sizeof(buffer));
+    mbox_property_message_init(mbox_buffer, sizeof(*mbox_buffer));
 
-    uart_write(CONSOLE_UART, "---\n");
+    uart_write(CONSOLE_UART, ">---\n");
+    for (unsigned int i = 0; i < sizeof(*mbox_buffer) / sizeof(buffer[0]);
+         i++) {
+        uart_write(CONSOLE_UART, itoa(buffer[i]));
+    }
+    uart_write(CONSOLE_UART, "---<\n");
 
-    mbox_write(PROPERTY_TAGS_ARM_TO_VC, &buffer);
+    mbox_write(PROPERTY_TAGS_ARM_TO_VC, mbox_buffer);
     (void)mbox_read(PROPERTY_TAGS_ARM_TO_VC);
 
-    for (unsigned int i = 0; i < sizeof(buffer) / sizeof(uint32_t); i++)
-        uart_write(CONSOLE_UART, itoa(((uint32_t*)&buffer)[i]));
+    uart_write(CONSOLE_UART, ">---\n");
+    for (unsigned int i = 0; i < sizeof(*mbox_buffer) / sizeof(buffer[0]);
+         i++) {
+        uart_write(CONSOLE_UART, itoa(buffer[i]));
+    }
+    uart_write(CONSOLE_UART, "---<\n");
 }

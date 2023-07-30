@@ -19,10 +19,10 @@ SECTIONS {
     . = __kernel_load_address;
     
     /* .startup contains the bootstrapping routine for our C code. */
-    .init : { *(.init) }
+    .init : { *(.init*) }
 
     /* .text contains the compiled C code. */
-    .text : { *(.text) *(.gnu.linkonce.t*) }
+    .text : { *(.text*) }
 
     /*
      * Put padding between data and text sections to ensure data is not marked
@@ -39,24 +39,21 @@ SECTIONS {
      * memory.
      */
     __bss_start = .;
-    .bss (NOLOAD) : {
-        *(.bss*)
-        *(.gnu.linkonce.b*)
-        *(COMMON)
-    }
+    .bss (NOLOAD) : { *(.bss*) }
     /* BSS is DWORD aligned */
     __bss_end = .;
     __bss_size = (__bss_end - __bss_start) / 8;
 
-    . = ALIGN(CONSTANT(COMMONPAGESIZE));
+    /* FIXME: This has something to do with freezes */
+    /* . = ALIGN(CONSTANT(COMMONPAGESIZE)); */
 
     /* .rodata contains readonly data. */
-    .rodata : { *(.rodata*) *(.gnu.linkonce.d*) }
+    .rodata : { *(.rodata*) }
 
     . = ALIGN(CONSTANT(COMMONPAGESIZE));
 
     /* .data contains mutable variables */
-    .data : { *(.data*) *(.gnu.linkonce.d*) }
+    .data : { *(.data*) }
 
     /*
      * Discard unnecessary sections from the ELF.

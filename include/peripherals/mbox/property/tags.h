@@ -7,8 +7,6 @@
 #include "tags/hardware.h"
 #include "tags/videocore.h"
 
-#define NULL_TAG_ID 0
-
 #define TAGS       \
     VIDEOCORE_TAGS \
     HARDWARE_TAGS  \
@@ -30,11 +28,11 @@ typedef struct {
     volatile uint32_t status_code;
 } mbox_property_tag_header;
 
-#define TAG(enum, name, id)              \
-    typedef struct {                     \
-        mbox_property_tag_header header; \
-        name##_tag_buffer buffer;        \
-    } name##_tag;
+#define TAG(enum, name, id)                \
+    typedef struct {                       \
+        mbox_property_tag_header header;   \
+        volatile name##_tag_buffer buffer; \
+    } __attribute__((packed)) name##_tag;
 TAGS;
 #undef TAG
 
