@@ -7,10 +7,14 @@
 #include "tags/hardware.h"
 #include "tags/videocore.h"
 
-#define TAGS       \
-    VIDEOCORE_TAGS \
-    HARDWARE_TAGS  \
+#define TAGS               \
+    TAG(NULL_TAG, null, 0) \
+    VIDEOCORE_TAGS         \
+    HARDWARE_TAGS          \
     FRAMEBUFFER_TAGS
+
+typedef struct {
+} null_tag_buffer;
 
 #define TAG(enum, name, id) enum,
 // clang-format off
@@ -24,7 +28,8 @@ typedef enum {
 
 typedef struct {
     mbox_property_tag_id id;
-    uint32_t buffer_size;
+    // HACK: There should be no need for `volatile`
+    volatile uint32_t buffer_size;
     volatile uint32_t status_code;
 } mbox_property_tag_header;
 

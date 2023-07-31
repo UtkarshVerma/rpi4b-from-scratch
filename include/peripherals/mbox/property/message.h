@@ -32,4 +32,4 @@ typedef struct {
     volatile message_buffer_status_code status;
 } mbox_property_message_buffer_header;
 
-void mbox_property_message_init(void* buffer, size_t size);
+int mbox_property_message_init(void* buffer, size_t size);

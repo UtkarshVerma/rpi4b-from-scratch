@@ -1,7 +1,5 @@
 #include "peripherals/mbox/property/tags.h"
 
-#include <stddef.h>
-
 #include "util.h"
 
 typedef struct {

@@ -8,19 +8,16 @@
 #include "uart.h"
 #include "util.h"
 
-static MBOX_PROPERTY_MESSAGE_BUFFER(buffer, 100);
+static MBOX_PROPERTY_MESSAGE_BUFFER(buffer, 20);
 
 void main() {
     uart_init(CONSOLE_UART, 115200);
 
     MBOX_PROPERTY_MESSAGE_BUFFER_LAYOUT(
-        hardware_get_board_revision_tag a; hardware_get_board_revision_tag c;
-        hardware_get_board_revision_tag d;
+        hardware_get_board_revision_tag a;
         hardware_get_board_revision_tag b;)* mbox_buffer = (void*)buffer;
     mbox_buffer->a.header.id = HARDWARE_GET_BOARD_REVISION;
     mbox_buffer->b.header.id = HARDWARE_GET_BOARD_REVISION;
-    mbox_buffer->c.header.id = HARDWARE_GET_BOARD_REVISION;
-    mbox_buffer->d.header.id = HARDWARE_GET_BOARD_REVISION;
 
     uart_write(CONSOLE_UART, ">---\n");
     for (unsigned int i = 0; i < sizeof(*mbox_buffer) / sizeof(buffer[0]);

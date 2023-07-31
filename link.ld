@@ -40,12 +40,12 @@ SECTIONS {
      */
     __bss_start = .;
     .bss (NOLOAD) : { *(.bss*) }
-    /* BSS is DWORD aligned */
     __bss_end = .;
+
+    /* BSS is DWORD aligned */
     __bss_size = (__bss_end - __bss_start) / 8;
 
-    /* FIXME: This has something to do with freezes */
-    /* . = ALIGN(CONSTANT(COMMONPAGESIZE)); */
+    . = ALIGN(CONSTANT(COMMONPAGESIZE));
 
     /* .rodata contains readonly data. */
     .rodata : { *(.rodata*) }
