@@ -7,8 +7,8 @@ typedef struct {
     uint32_t buffer_size;
 } tag_metadata;
 
-#define TAG(enum, name, tag_id)                   \
-    [enum] = {                                    \
+#define TAG(NAME, name, tag_id)                   \
+    [NAME##_TAG_ID] = {                           \
         .id          = tag_id,                    \
         .buffer_size = sizeof(name##_tag_buffer), \
     },
@@ -21,8 +21,10 @@ int mbox_property_tag_init(mbox_property_tag_id id,
         return 1;
 
     const tag_metadata* m = &metadata[id];
+    header->id            = m->id;
+    if (id == NULL_TAG_ID)
+        return 0;
 
-    header->id          = m->id;
     header->buffer_size = m->buffer_size;
     header->status_code = 0;
 

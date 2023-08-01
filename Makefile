@@ -20,7 +20,7 @@ OBJDUMP := $(CROSS_COMPILE)-objdump
 SIZE := $(CROSS_COMPILE)-size
 GDB := $(CROSS_COMPILE)-gdb
 
-CFLAGS := -Os -I. -I$(INC_DIR)
+CFLAGS := -Os -I. -I$(INC_DIR) -std=c17
 CFLAGS += -mcpu=cortex-a72 -march=armv8-a
 CFLAGS += -Wall -Wextra -Wswitch-enum
 CFLAGS += -ffreestanding -fdata-sections -ffunction-sections

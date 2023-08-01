@@ -9,12 +9,14 @@
 #define MBOX_PROPERTY_MESSAGE_BUFFER(name, size) \
     uint32_t name[size] __attribute__((aligned(16)))
 
+// clang-format off
 #define MBOX_PROPERTY_MESSAGE_BUFFER_LAYOUT(tags)   \
     struct {                                        \
         mbox_property_message_buffer_header header; \
-        tags;                                       \
+        tags                                        \
         const uint32_t null_tag;                    \
     } __attribute__((packed))
+// clang-format on
 
 typedef union {
     enum {

@@ -7,16 +7,16 @@
 #include "tags/hardware.h"
 #include "tags/videocore.h"
 
-#define TAGS               \
-    TAG(NULL_TAG, null, 0) \
-    VIDEOCORE_TAGS         \
-    HARDWARE_TAGS          \
+#define TAGS           \
+    TAG(NULL, null, 0) \
+    VIDEOCORE_TAGS     \
+    HARDWARE_TAGS      \
     FRAMEBUFFER_TAGS
 
 typedef struct {
 } null_tag_buffer;
 
-#define TAG(enum, name, id) enum,
+#define TAG(NAME, name, id) NAME##_TAG_ID,
 // clang-format off
 typedef enum {
     TAGS
@@ -26,14 +26,18 @@ typedef enum {
 // clang-format on
 #undef TAG
 
-typedef struct {
+// Technically, only `status_code` gets modified by the GPU. However, the
+// compiler optimizations try to assign `id` and `buffer_size` as a DWORD which
+// may not always work as DWORD alignment in the buffer is not guaranteed.
+// Hence, the whole struct is marked `voltatile` to disable memory access
+// optimizations for the header.
+typedef volatile struct {
     mbox_property_tag_id id;
-    // HACK: There should be no need for `volatile`
-    volatile uint32_t buffer_size;
-    volatile uint32_t status_code;
+    uint32_t buffer_size;
+    uint32_t status_code;
 } mbox_property_tag_header;
 
-#define TAG(enum, name, id)                \
+#define TAG(NAME, name, id)                \
     typedef struct {                       \
         mbox_property_tag_header header;   \
         volatile name##_tag_buffer buffer; \
