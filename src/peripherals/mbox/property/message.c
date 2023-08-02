@@ -6,7 +6,7 @@
 
 int mbox_property_message_init(void* buffer, size_t size) {
     // Append the null tag at the end of the buffer
-    uintptr_t null_tag_ptr   = (uintptr_t)buffer + size + sizeof(uint32_t);
+    uintptr_t null_tag_ptr   = (uintptr_t)buffer + size - sizeof(uint32_t);
     *(uint32_t*)null_tag_ptr = NULL_TAG_ID;
 
     mbox_property_message_buffer_header* header = buffer;
