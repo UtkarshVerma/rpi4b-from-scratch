@@ -1,25 +1,17 @@
 #include "main.h"
 
-#include <stddef.h>
 #include <stdint.h>
 
 #include "peripherals/mbox.h"
 #include "peripherals/mbox/property/message.h"
 #include "peripherals/mbox/property/tags.h"
+#include "peripherals/mbox/property/tags/framebuffer.h"
 #include "uart.h"
 #include "util.h"
 
 static MBOX_PROPERTY_MESSAGE_BUFFER(buffer, 20);
 
 void mbox_call(void* buf, size_t size) {
-    uart_write(CONSOLE_UART, ">---\n");
-    for (unsigned int i = 0; i < size / sizeof(buffer[0]); i++) {
-        uart_write(CONSOLE_UART, itoa(buffer[i]));
-    }
-    uart_write(CONSOLE_UART, "---<\n");
-
-    mbox_property_message_init(buf, size);
-
     uart_write(CONSOLE_UART, ">---\n");
     for (unsigned int i = 0; i < size / sizeof(buffer[0]); i++) {
         uart_write(CONSOLE_UART, itoa(buffer[i]));
@@ -39,32 +31,33 @@ void mbox_call(void* buf, size_t size) {
 void main(void) {
     uart_init(CONSOLE_UART, 115200);
 
-    MBOX_PROPERTY_MESSAGE_BUFFER_LAYOUT(
-        framebuffer_set_virtual_dimensions_tag b;
-        framebuffer_set_physical_dimensions_tag a;
-        framebuffer_set_depth_tag c;)* mbox_buffer = (void*)buffer;
+#define TAGS(X, ...)                                           \
+    X(FRAMEBUFFER_ALLOCATE_BUFFER_TAG, a, __VA_ARGS__)         \
+    X(FRAMEBUFFER_SET_PHYSICAL_DIMENSIONS_TAG, b, __VA_ARGS__) \
+    X(FRAMEBUFFER_SET_DEPTH_TAG, c, __VA_ARGS__)
 
-    const unsigned int width  = 1920;
-    const unsigned int height = 1080;
-    const unsigned int depth  = 24;
+    MBOX_PROPERTY_MESSAGE_BUFFER_INIT(mbox_buffer, TAGS, buffer);
 
-    mbox_buffer->a.header.id = FRAMEBUFFER_SET_PHYSICAL_DIMENSIONS_TAG_ID;
-    mbox_buffer->a.buffer.request.width  = width;
-    mbox_buffer->a.buffer.request.height = height;
+    // const unsigned int width  = 1920;
+    // const unsigned int height = 1080;
+    // const unsigned int depth  = 24;
 
-    mbox_buffer->b.header.id = FRAMEBUFFER_SET_VIRTUAL_DIMENSIONS_TAG_ID;
-    mbox_buffer->b.buffer.request.width  = width;
-    mbox_buffer->b.buffer.request.height = height;
+    // mbox_buffer->a.buffer.request.width = width;
+    // mbox_buffer->a.buffer.request.height = height;
 
-    mbox_buffer->c.header.id = FRAMEBUFFER_SET_DEPTH_TAG_ID;
-    mbox_buffer->c.buffer.request.bits_per_pixel = depth;
+    // mbox_buffer->b.header.id = FRAMEBUFFER_SET_VIRTUAL_DIMENSIONS_TAG_ID;
+    // mbox_buffer->b.buffer.request.width  = width;
+    // mbox_buffer->b.buffer.request.height = height;
 
-    mbox_call(mbox_buffer, sizeof(*mbox_buffer));
+    // mbox_buffer->c.header.id = FRAMEBUFFER_SET_DEPTH_TAG_ID;
+    // mbox_buffer->c.buffer.request.bits_per_pixel = depth;
 
-    MBOX_PROPERTY_MESSAGE_BUFFER_LAYOUT(
-        framebuffer_allocate_buffer_tag a;)* buf2 = (void*)buffer;
-    buf2->a.header.id                = FRAMEBUFFER_ALLOCATE_BUFFER_TAG_ID;
-    buf2->a.buffer.request.alignment = 16;
+    // mbox_call(mbox_buffer, sizeof(*mbox_buffer));
 
-    mbox_call(buf2, sizeof(*buf2));
+    // MBOX_PROPERTY_MESSAGE_BUFFER_LAYOUT(
+    //     framebuffer_allocate_buffer_tag a;)* buf2 = (void*)buffer;
+    // buf2->a.header.id                = FRAMEBUFFER_ALLOCATE_BUFFER_TAG_ID;
+    // buf2->a.buffer.request.alignment = 16;
+
+    // mbox_call(buf2, sizeof(*buf2));
 }

@@ -2,14 +2,18 @@
 
 #include <stdint.h>
 
-#define HARDWARE_TAGS                                                         \
-    TAG(HARDWARE_GET_BOARD_MODEL, hardware_get_board_model, 0x00010001)       \
-    TAG(HARDWARE_GET_BOARD_REVISION, hardware_get_board_revision, 0x00010002) \
-    TAG(HARDWARE_GET_BOARD_MAC_ADDRESS, hardware_get_board_mac_address,       \
-        0x00010003)                                                           \
-    TAG(HARDWARE_GET_BOARD_SERIAL, hardware_get_board_serial, 0x00010004)     \
-    TAG(HARDWARE_GET_ARM_MEMORY, hardware_get_arm_memory, 0x00010005)         \
-    TAG(HARDWARE_GET_VC_MEMORY, hardware_get_vc_memory, 0x00010006)
+#define HARDWARE_GET_BOARD_MODEL_TAG \
+    hardware_get_board_model_tag_buffer, 0x00010001
+#define HARDWARE_GET_BOARD_REVISION_TAG \
+    hardware_get_board_revision_tag_buffer, 0x00010002
+#define HARDWARE_GET_BOARD_MAC_ADDRESS_TAG \
+    hardware_get_board_mac_address_tag_buffer, 0x00010003
+#define HARDWARE_GET_BOARD_SERIAL_TAG \
+    hardware_get_board_serial_tag_buffer, 0x00010004
+#define HARDWARE_GET_ARM_MEMORY_TAG \
+    hardware_get_arm_memory_tag_buffer, 0x00010005
+#define HARDWARE_GET_VC_MEMORY_TAG \
+    hardware_get_vc_memory_tag_buffer, 0x00010006
 
 typedef union {
     struct {
