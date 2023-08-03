@@ -17,15 +17,11 @@
 
 typedef union {
     struct {
-    } request;
-    struct {
         uint32_t board_model;
     } response;
 } hardware_get_board_model_tag_buffer;
 
 typedef union {
-    struct {
-    } request;
     struct {
         uint32_t board_revision;
     } response;
@@ -33,15 +29,11 @@ typedef union {
 
 typedef union {
     struct {
-    } request;
-    struct {
         uint8_t board_mac_address[6];
     } response;
 } hardware_get_board_mac_address_tag_buffer;
 
 typedef union {
-    struct {
-    } request;
     struct {
         uint64_t board_serial;
     } response;
@@ -49,16 +41,12 @@ typedef union {
 
 typedef union {
     struct {
-    } request;
-    struct {
         uint32_t base_addr;
         uint32_t size;
     } response;
 } hardware_get_arm_memory_tag_buffer;
 
 typedef union {
-    struct {
-    } request;
     struct {
         uint32_t base_addr;
         uint32_t size;

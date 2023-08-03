@@ -21,8 +21,8 @@ SIZE := $(CROSS_COMPILE)-size
 GDB := $(CROSS_COMPILE)-gdb
 
 CFLAGS := -Os -I. -I$(INC_DIR) -std=c17
-CFLAGS += -mcpu=cortex-a72 -march=armv8-a
-CFLAGS += -Wall -Wextra -Wswitch-enum
+CFLAGS += -mcpu=cortex-a72 -march=armv8-a -mstrict-align
+CFLAGS += -Wall -Wpedantic -Wextra -Wswitch-enum
 CFLAGS += -ffreestanding -fdata-sections -ffunction-sections
 LDFLAGS := -nostdlib -nostartfiles -static
 LDFLAGS += -Wl,--build-id=none,--gc-sections

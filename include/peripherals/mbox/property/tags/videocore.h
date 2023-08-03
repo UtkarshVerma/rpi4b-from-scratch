@@ -7,8 +7,6 @@
 
 typedef union {
     struct {
-    } request;
-    struct {
         uint32_t firmware_revision;
     } response;
 } videocore_get_firmware_revision_tag_buffer;

@@ -4,8 +4,7 @@
 
 #define FRAMEBUFFER_ALLOCATE_BUFFER_TAG \
     framebuffer_allocate_buffer_tag_buffer, 0x00040001
-#define FRAMEBUFFER_RELEASE_BUFFER_TAG \
-    framebuffer_release_buffer_tag_buffer, 0x000480001
+#define FRAMEBUFFER_RELEASE_BUFFER_TAG void, 0x000480001
 #define FRAMEBUFFER_BLANK_SCREEN_TAG \
     framebuffer_blank_screen_tag_buffer, 0x00040002
 #define FRAMEBUFFER_GET_PHYSICAL_DIMENSIONS_TAG \
@@ -72,13 +71,6 @@ typedef union {
 
 typedef union {
     struct {
-    } request;
-    struct {
-    } response;
-} framebuffer_release_buffer_tag_buffer;
-
-typedef union {
-    struct {
         uint32_t state;
     } request;
     struct {
@@ -87,8 +79,6 @@ typedef union {
 } framebuffer_blank_screen_tag_buffer;
 
 typedef union {
-    struct {
-    } request;
     struct {
         uint32_t width;
         uint32_t height;
@@ -119,8 +109,6 @@ typedef union {
 
 typedef union {
     struct {
-    } request;
-    struct {
         uint32_t width;
         uint32_t height;
     } response;
@@ -150,8 +138,6 @@ typedef union {
 
 typedef union {
     struct {
-    } request;
-    struct {
         uint32_t bits_per_pixel;
     } response;
 } framebuffer_get_depth_tag_buffer;
@@ -180,8 +166,6 @@ typedef enum {
 } pixel_order;
 
 typedef union {
-    struct {
-    } request;
     struct {
         pixel_order state;
     } response;
@@ -213,8 +197,6 @@ typedef enum {
 
 typedef union {
     struct {
-    } request;
-    struct {
         alpha_mode state;
     } response;
 } framebuffer_get_alpha_mode_tag_buffer;
@@ -239,15 +221,11 @@ typedef union {
 
 typedef union {
     struct {
-    } request;
-    struct {
         uint32_t bytes_per_line;
     } response;
 } framebuffer_get_pitch_tag_buffer;
 
 typedef union {
-    struct {
-    } request;
     struct {
         uint32_t x;
         uint32_t y;
@@ -277,8 +255,6 @@ typedef union {
 } framebuffer_set_virtual_offset_tag_buffer;
 
 typedef union {
-    struct {
-    } request;
     struct {
         uint32_t top;
         uint32_t bottom;
@@ -318,8 +294,6 @@ typedef union {
 } framebuffer_set_overscan_tag_buffer;
 
 typedef union {
-    struct {
-    } request;
     struct {
         uint32_t palette[256];
     } response;

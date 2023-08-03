@@ -1,15 +1,17 @@
 #include "main.h"
 
+#include <stddef.h>
 #include <stdint.h>
 
 #include "peripherals/mbox.h"
 #include "peripherals/mbox/property/message.h"
 #include "peripherals/mbox/property/tags.h"
 #include "peripherals/mbox/property/tags/framebuffer.h"
+#include "peripherals/mbox/property/tags/hardware.h"
 #include "uart.h"
 #include "util.h"
 
-static MBOX_PROPERTY_MESSAGE_BUFFER(buffer, 20);
+static MBOX_PROPERTY_MESSAGE_BUFFER(buffer, 30);
 
 void mbox_call(void* buf, size_t size) {
     uart_write(CONSOLE_UART, ">---\n");
@@ -31,33 +33,49 @@ void mbox_call(void* buf, size_t size) {
 void main(void) {
     uart_init(CONSOLE_UART, 115200);
 
-#define TAGS(X, ...)                                           \
-    X(FRAMEBUFFER_ALLOCATE_BUFFER_TAG, a, __VA_ARGS__)         \
-    X(FRAMEBUFFER_SET_PHYSICAL_DIMENSIONS_TAG, b, __VA_ARGS__) \
-    X(FRAMEBUFFER_SET_DEPTH_TAG, c, __VA_ARGS__)
+    // #define TAGS(X, ...)                                           \
+//     X(FRAMEBUFFER_ALLOCATE_BUFFER_TAG, a, __VA_ARGS__)         \
+//     X(FRAMEBUFFER_SET_PHYSICAL_DIMENSIONS_TAG, b, __VA_ARGS__) \
+//     X(FRAMEBUFFER_SET_VIRTUAL_DIMENSIONS_TAG, c, __VA_ARGS__)  \
+//     X(FRAMEBUFFER_SET_DEPTH_TAG, d, __VA_ARGS__)
+
+#define TAGS(X, ...)                                      \
+    X(HARDWARE_GET_BOARD_MAC_ADDRESS_TAG, a, __VA_ARGS__) \
+    X(HARDWARE_GET_BOARD_MAC_ADDRESS_TAG, b, __VA_ARGS__)
 
     MBOX_PROPERTY_MESSAGE_BUFFER_INIT(mbox_buffer, TAGS, buffer);
 
-    // const unsigned int width  = 1920;
-    // const unsigned int height = 1080;
-    // const unsigned int depth  = 24;
+    // MBOX_PROPERTY_TAG_REQUEST(mbox_buffer, a).alignment = 16;
 
-    // mbox_buffer->a.buffer.request.width = width;
-    // mbox_buffer->a.buffer.request.height = height;
+    // MBOX_PROPERTY_TAG_REQUEST(mbox_buffer, b).width  = 1920;
+    // MBOX_PROPERTY_TAG_REQUEST(mbox_buffer, b).height = 1080;
 
-    // mbox_buffer->b.header.id = FRAMEBUFFER_SET_VIRTUAL_DIMENSIONS_TAG_ID;
-    // mbox_buffer->b.buffer.request.width  = width;
-    // mbox_buffer->b.buffer.request.height = height;
+    // MBOX_PROPERTY_TAG_REQUEST(mbox_buffer, c).width  = 1920;
+    // MBOX_PROPERTY_TAG_REQUEST(mbox_buffer, c).height = 1080;
 
-    // mbox_buffer->c.header.id = FRAMEBUFFER_SET_DEPTH_TAG_ID;
-    // mbox_buffer->c.buffer.request.bits_per_pixel = depth;
+    // MBOX_PROPERTY_TAG_REQUEST(mbox_buffer, d).bits_per_pixel = 32;
 
-    // mbox_call(mbox_buffer, sizeof(*mbox_buffer));
+    mbox_call(mbox_buffer, sizeof(*mbox_buffer));
+    uint8_t* buf =
+        MBOX_PROPERTY_TAG_RESPONSE(mbox_buffer, a).board_mac_address;
+    for (int i = 0; i < 6; i++) uart_write(CONSOLE_UART, itoa(buf[i]));
 
-    // MBOX_PROPERTY_MESSAGE_BUFFER_LAYOUT(
-    //     framebuffer_allocate_buffer_tag a;)* buf2 = (void*)buffer;
-    // buf2->a.header.id                = FRAMEBUFFER_ALLOCATE_BUFFER_TAG_ID;
-    // buf2->a.buffer.request.alignment = 16;
+    // const int width  = 50;
+    // const int height = 50;
 
-    // mbox_call(buf2, sizeof(*buf2));
+    // uint32_t* fb = (void*)(uintptr_t)MBOX_PROPERTY_TAG_RESPONSE(mbox_buffer,
+    // a)
+    //                    .base_address;
+
+    // /* Produce a colour spread across the screen */
+    // unsigned int pixel_value = 0xffffffff;
+    // for (int y = 0; y < height; y++) {
+    //     int line_offset = y * width;
+
+    //     for (int x = 0; x < width; x++) {
+    //         fb[line_offset + x] = pixel_value;
+    //     }
+    // }
+
+    // uart_write(CONSOLE_UART, "done\n");
 }
