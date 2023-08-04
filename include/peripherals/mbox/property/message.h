@@ -1,5 +1,6 @@
 #pragma once
 
+#include <stddef.h>
 #include <stdint.h>
 
 #include "tags.h"
@@ -11,25 +12,18 @@
 
 #define MBOX_PROPERTY_MESSAGE_BUFFER_INIT(name, TAGS, dest) \
     struct {                                                \
-        uint32_t size;                                      \
-        volatile message_buffer_status_code status;         \
+        mbox_property_message_header header;                \
         TAGS(MBOX_PROPERTY_TAG_TYPE, name)                  \
-        uint32_t null_tag;                                  \
+        const uint32_t null_tag;                            \
     } *name = (void *)dest;                                 \
                                                             \
     TAGS(MBOX_PROPERTY_TAG_INIT, name)                      \
-    name->size                = sizeof(*name);              \
-    name->status.request_code = PROCESS_REQUEST;            \
-    name->null_tag            = 0
+    mbox_property_message_init(name, sizeof(*name))
 
-// TODO: Make this internal to the init function
-typedef union {
-    enum {
-        PROCESS_REQUEST = 0,
-    } request_code;
+typedef struct {
+    uint32_t size;
+    volatile uint32_t status;
+} mbox_property_message_header;
 
-    enum {
-        RESPONSE_SUCCESSFUL = 0x80000000,
-        REPSONSE_ERROR      = 0x80000001,
-    } response_code;
-} message_buffer_status_code;
+void mbox_property_message_init(void *buffer, size_t size);
+int mbox_property_message_is_successful(void *buffer);

@@ -1,27 +1,17 @@
 #include "main.h"
 
-#include "peripherals/mbox.h"
-#include "peripherals/mbox/property/message.h"
-#include "peripherals/mbox/property/tags.h"
-#include "peripherals/mbox/property/tags/hardware.h"
+#include "framebuffer.h"
 #include "uart.h"
 #include "util.h"
 
-static MBOX_PROPERTY_MESSAGE_BUFFER(buffer, 30);
-
 void main(void) {
-    uart_init(CONSOLE_UART, 115200);
+    int i = frambuffer_init(100, 100, 32);
+    uart_write(CONSOLE_UART, "---\n");
+    uart_write(CONSOLE_UART, itoa(i));
 
-#define TAGS(X, ...) X(HARDWARE_GET_CLOCKS_TAG, a, __VA_ARGS__)
-    MBOX_PROPERTY_MESSAGE_BUFFER_INIT(mbox_buffer, TAGS, buffer);
+    for (unsigned int x = 0; x < 100; x++)
+        for (unsigned int y = 0; y < 100; y++)
+            framebuffer_draw_pixel(x, y, 0xffffffff);
 
-    mbox_write(PROPERTY_TAGS_ARM_TO_VC, mbox_buffer);
-    (void)mbox_read(PROPERTY_TAGS_ARM_TO_VC);
-
-    for (unsigned int i = 0;
-         i < ARRAY_SIZE(MBOX_PROPERTY_TAG_RESPONSE(mbox_buffer, a).clocks);
-         i++)
-        uart_write(
-            CONSOLE_UART,
-            itoa(MBOX_PROPERTY_TAG_RESPONSE(mbox_buffer, a).clocks[i].id));
+    uart_write(CONSOLE_UART, "Done\n");
 }

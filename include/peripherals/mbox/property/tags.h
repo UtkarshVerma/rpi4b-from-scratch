@@ -15,8 +15,9 @@
 
 #define MBOX_PROPERTY_TAG_INIT(...) MBOX_PROPERTY_TAG_INIT_(__VA_ARGS__)
 #define MBOX_PROPERTY_TAG_INIT_(type, tag_id, name, buffer) \
+    buffer->name.id          = tag_id;                      \
     buffer->name.buffer_size = sizeof(type);                \
-    buffer->name.id          = tag_id;
+    buffer->name.status_code = 0;
 
 #define MBOX_PROPERTY_TAG_REQUEST(buffer_name, child) \
     buffer_name->child.buffer.request
