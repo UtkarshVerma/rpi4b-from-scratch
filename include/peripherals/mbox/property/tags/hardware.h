@@ -14,6 +14,7 @@
     hardware_get_arm_memory_tag_buffer, 0x00010005
 #define HARDWARE_GET_VC_MEMORY_TAG \
     hardware_get_vc_memory_tag_buffer, 0x00010006
+#define HARDWARE_GET_CLOCKS_TAG hardware_get_clocks_tag_buffer, 0x00010007
 
 typedef union {
     struct {
@@ -53,12 +54,13 @@ typedef union {
     } response;
 } hardware_get_vc_memory_tag_buffer;
 
-// TODO: This is a bit complex
-// typedef union {
-//     struct {
-//     } request;
-//     struct {
-//         const volatile uint32_t base_addr;
-//         const volatile uint32_t size;
-//     } response;
-// } hardware_get_clocks;
+// NOTE: The docs mention 15 kinds of clocks, but the 15 array length might
+// need further investigation.
+typedef union {
+    struct {
+        struct {
+            uint32_t parent_id;
+            uint32_t id;
+        } clocks[15];
+    } response;
+} hardware_get_clocks_tag_buffer;

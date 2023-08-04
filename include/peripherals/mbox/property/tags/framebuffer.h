@@ -304,15 +304,11 @@ typedef enum {
     INVALID,
 } validity;
 
-// TODO: Think about dynamically sizing this
 typedef union {
     struct {
         uint32_t offset;
         uint32_t length;
-
-        // NOTE: It should be of size `length` but that's not a
-        // constexpr.
-        uint32_t palette[256];
+        uint32_t palette[];
     } request;
     struct {
         validity validity;
