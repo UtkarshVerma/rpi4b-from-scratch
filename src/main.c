@@ -7,7 +7,7 @@
 #include "uart.h"
 #include "util.h"
 
-static MBOX_PROPERTY_MESSAGE_BUFFER(buffer, 30);
+static MBOX_PROPERTY_MESSAGE_BUFFER(buffer, 40);
 
 void main(void) {
     uart_init(CONSOLE_UART, 115200);
